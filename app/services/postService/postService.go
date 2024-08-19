@@ -19,6 +19,15 @@ func GetAllPosts() ([]models.Post, error) {
 	return posts, nil
 }
 
+func GetPostContentByID(id uint) (string, error) {
+	var post models.Post
+	result := database.DB.Where("id = ?", id).Find(&post)
+	if result.Error != nil {
+		return "", result.Error
+	}
+	return post.Content, nil
+}
+
 func GetUserByPostID(id uint) (uint, error) {
 	var post models.Post
 	result := database.DB.Where("id = ?", id).First(&post)

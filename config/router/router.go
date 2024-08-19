@@ -2,6 +2,7 @@ package router
 
 import (
 	"BBS/app/controllers/postController"
+	"BBS/app/controllers/reportController"
 	"BBS/app/controllers/userController"
 
 	"github.com/gin-gonic/gin"
@@ -19,5 +20,8 @@ func Init(r *gin.Engine) {
 		api.GET("/student/post", postController.GetAllPosts)
 		api.DELETE("/student/post", postController.DeletePost)
 		api.PUT("/student/post", postController.EditPost)
+
+		api.POST("/student/report-post", reportController.NewReport)
+		api.GET("/student/report-post", reportController.GetReport)
 	}
 }
