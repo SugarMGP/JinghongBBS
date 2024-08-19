@@ -4,33 +4,32 @@ import (
 	"BBS/app/models"
 	"BBS/app/services/reportService"
 	"BBS/app/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
-
-type GetData struct {
-	UserID uint `json:"user_id"`
-}
 
 type ResponseData struct {
 	ReportList []models.Report `json:"report_list"`
 }
 
 func GetReport(c *gin.Context) {
-	var getData GetData
-	err := c.ShouldBindJSON(&getData)
-	if err != nil {
+	var userID int
+	var err error
+
+	userID, err = strconv.Atoi(c.Query("user_id"))
+	if err != nil || userID < 0 {
 		utils.JsonErrorResponse(c, 200501, "参数错误")
 		return
 	}
 
-	list, err := reportService.GetReports(getData.UserID)
+	list, err := reportService.GetReports(uint(userID))
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return
 	}
 
-	var responseData ResponseData
-	responseData.ReportList = list
-	utils.JsonSuccessResponse(c, responseData)
+	var data ResponseData
+	data.ReportList = list
+	utils.JsonSuccessResponse(c, data)
 }
