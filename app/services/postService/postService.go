@@ -20,12 +20,12 @@ func GetAllPosts() ([]models.Post, error) {
 }
 
 func GetPostByID(id uint) (*models.Post, error) {
-	var post *models.Post
-	result := database.DB.Where("id = ?", id).Find(&post)
+	var post models.Post
+	result := database.DB.Where("id = ?", id).First(&post)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return post, nil
+	return &post, nil
 }
 
 func GetUserByPostID(id uint) (uint, error) {
@@ -42,11 +42,11 @@ func DeletePost(id uint) error {
 }
 
 func EditPost(id uint, content string) error {
-	var post *models.Post
+	var post models.Post
 	result := database.DB.Where("id = ?", id).First(&post)
 	if result.Error != nil {
 		return result.Error
 	}
-	post.Content = content
-	return nil
+	result = database.DB.Model(&post).Update("content", content)
+	return result.Error
 }

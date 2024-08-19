@@ -25,9 +25,9 @@ func NewReport(c *gin.Context) {
 		return
 	}
 
-	_, err = reportService.GetReportByID(data.UserID, data.PostID)
+	_, err = reportService.GetReportByID(data.PostID)
 	if err == nil {
-		utils.JsonErrorResponse(c, 200505, "举报已存在")
+		utils.JsonErrorResponse(c, 200505, "该帖子已被举报")
 		return
 	} else if err != gorm.ErrRecordNotFound {
 		utils.JsonInternalServerErrorResponse(c)

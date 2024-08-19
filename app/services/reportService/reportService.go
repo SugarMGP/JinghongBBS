@@ -28,11 +28,16 @@ func GetAllReportsUnhandled() ([]models.Report, error) {
 	return reports, nil
 }
 
-func GetReportByID(user uint, post uint) (*models.Report, error) {
-	var report *models.Report
-	result := database.DB.Where("user = ?", user).Where("post = ?", post).First(&report)
+func GetReportByID(post uint) (*models.Report, error) {
+	var report models.Report
+	result := database.DB.Where("post = ?", post).First(&report)
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return report, nil
+	return &report, nil
+}
+
+func SetReportStatus(post uint, status uint) error {
+	result := database.DB.Where("post = ?", post).First(&models.Report{}).Update("status", status)
+	return result.Error
 }
