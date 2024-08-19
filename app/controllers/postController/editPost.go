@@ -8,13 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
-type DeleteData struct {
-	PostID uint `json:"post_id"`
-	UserID uint `json:"user_id"`
+type EditData struct {
+	PostID  uint   `json:"post_id"`
+	UserID  uint   `json:"user_id"`
+	Content string `json:"content"`
 }
 
-func DeletePost(c *gin.Context) {
-	var data DeleteData
+func EditPost(c *gin.Context) {
+	var data EditData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		utils.JsonErrorResponse(c, 200501, "参数错误")
@@ -37,7 +38,7 @@ func DeletePost(c *gin.Context) {
 		return
 	}
 
-	err = postService.DeletePost(data.PostID)
+	err = postService.EditPost(data.PostID, data.Content)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return

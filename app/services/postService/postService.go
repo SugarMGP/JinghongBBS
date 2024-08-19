@@ -32,3 +32,13 @@ func DeletePost(id uint) error {
 	result := database.DB.Where("id = ?", id).Delete(&models.Post{})
 	return result.Error
 }
+
+func EditPost(id uint, content string) error {
+	var post *models.Post
+	result := database.DB.Where("id = ?", id).First(&post)
+	if result.Error != nil {
+		return result.Error
+	}
+	post.Content = content
+	return nil
+}

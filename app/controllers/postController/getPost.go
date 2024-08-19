@@ -12,7 +12,7 @@ type ResponseData struct {
 	PostList []models.Post `json:"post_list"`
 }
 
-func GetPosts(c *gin.Context) {
+func GetAllPosts(c *gin.Context) {
 	list, err := postService.GetAllPosts()
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
