@@ -8,6 +8,7 @@ import (
 	"BBS/app/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type ReportData struct {
@@ -24,8 +25,17 @@ func NewReport(c *gin.Context) {
 		return
 	}
 
+	_, err = reportService.GetReportByID(data.UserID, data.PostID)
+	if err == nil {
+		utils.JsonErrorResponse(c, 200505, "举报已存在")
+		return
+	} else if err != gorm.ErrRecordNotFound {
+		utils.JsonInternalServerErrorResponse(c)
+		return
+	}
+
 	// 获取帖子内容
-	content, err := postService.GetPostContentByID(data.PostID)
+	post, err := postService.GetPostByID(data.PostID)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return
@@ -40,7 +50,7 @@ func NewReport(c *gin.Context) {
 	err = reportService.NewReport(models.Report{
 		User:     data.UserID,
 		Post:     data.PostID,
-		Content:  content,
+		Content:  post.Content,
 		Reason:   data.Reason,
 		Status:   0,
 		Username: user.Username,

@@ -21,6 +21,6 @@ func Init(r *gin.Engine) {
 
 		api.POST("/student/report-post", reportController.NewReport)
 		api.GET("/student/report-post", reportController.GetReport)
-		api.GET("/admin/report", reportController.GetAllReports)
+		api.GET("/admin/report", reportController.GetAllReportsUnhandled)
 	}
 }

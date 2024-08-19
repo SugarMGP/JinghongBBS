@@ -7,7 +7,7 @@ import (
 
 func GetUserByUsername(username string) (*models.User, error) {
 	var user *models.User
-	result := database.DB.Where("user = ?", username).First(&user)
+	result := database.DB.Where("username = ?", username).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}

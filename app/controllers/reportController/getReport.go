@@ -40,7 +40,7 @@ func GetReport(c *gin.Context) {
 	utils.JsonSuccessResponse(c, data)
 }
 
-func GetAllReports(c *gin.Context) {
+func GetAllReportsUnhandled(c *gin.Context) {
 	var userID int
 	var err error
 
@@ -66,7 +66,7 @@ func GetAllReports(c *gin.Context) {
 		return
 	}
 
-	list, err := reportService.GetAllReports()
+	list, err := reportService.GetAllReportsUnhandled()
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return

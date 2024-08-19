@@ -19,11 +19,20 @@ func GetReports(user uint) ([]models.Report, error) {
 	return reports, nil
 }
 
-func GetAllReports() ([]models.Report, error) {
+func GetAllReportsUnhandled() ([]models.Report, error) {
 	var reports []models.Report
-	result := database.DB.Find(&reports)
+	result := database.DB.Where("status = 0").Find(&reports)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return reports, nil
+}
+
+func GetReportByID(user uint, post uint) (*models.Report, error) {
+	var report *models.Report
+	result := database.DB.Where("user = ?", user).Where("post = ?", post).First(&report)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return report, nil
 }
