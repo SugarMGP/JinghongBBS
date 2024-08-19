@@ -18,3 +18,17 @@ func GetAllPosts() ([]models.Post, error) {
 	}
 	return posts, nil
 }
+
+func GetUserByPostID(id uint) (uint, error) {
+	var post models.Post
+	result := database.DB.Where("id = ?", id).First(&post)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return post.User, nil
+}
+
+func DeletePost(id uint) error {
+	result := database.DB.Where("id = ?", id).Delete(&models.Post{})
+	return result.Error
+}

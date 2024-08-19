@@ -1,30 +1,33 @@
 package postController
 
 import (
-	"BBS/app/models"
 	"BBS/app/services/postService"
 	"BBS/app/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-type PostData struct {
-	Content string `json:"content" binding:"required"`
-	User    uint   `json:"user_id" binding:"required"`
+type DeleteData struct {
+	Post uint `json:"post_id"`
+	User uint `json:"user_id"`
 }
 
-func NewPost(c *gin.Context) {
-	var data PostData
+func DeletePost(c *gin.Context) {
+	var data DeleteData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		utils.JsonErrorResponse(c, 200501, "参数错误")
 		return
 	}
 
-	err = postService.NewPost(models.Post{
-		Content: data.Content,
-		User:    data.User,
-	})
+	var user uint
+	user, err = postService.GetUserByPostID(data.Post)
+	if user != data.User {
+		utils.JsonErrorResponse(c, 200501, "参数错误")
+		return
+	}
+
+	err = postService.DeletePost(data.Post)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return

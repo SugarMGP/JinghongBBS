@@ -15,7 +15,7 @@ func Init(r *gin.Engine) {
 		api.POST("/user/login", userController.Login)
 		api.POST("/user/reg", userController.Register)
 
-		api.POST("/student/post", postController.Post)
+		api.POST("/student/post", postController.NewPost)
 		api.GET("/student/post", postController.GetPosts)
 	}
 }
