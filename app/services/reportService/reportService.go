@@ -18,3 +18,12 @@ func GetReports(user uint) ([]models.Report, error) {
 	}
 	return reports, nil
 }
+
+func GetAllReports() ([]models.Report, error) {
+	var reports []models.Report
+	result := database.DB.Find(&reports)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return reports, nil
+}
