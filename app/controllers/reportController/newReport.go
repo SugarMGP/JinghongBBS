@@ -4,6 +4,7 @@ import (
 	"BBS/app/models"
 	"BBS/app/services/postService"
 	"BBS/app/services/reportService"
+	"BBS/app/services/userService"
 	"BBS/app/utils"
 
 	"github.com/gin-gonic/gin"
@@ -30,12 +31,19 @@ func NewReport(c *gin.Context) {
 		return
 	}
 
+	user, err := userService.GetUserByID(data.UserID)
+	if err != nil {
+		utils.JsonInternalServerErrorResponse(c)
+		return
+	}
+
 	err = reportService.NewReport(models.Report{
-		User:    data.UserID,
-		Post:    data.PostID,
-		Content: content,
-		Reason:  data.Reason,
-		Status:  0,
+		User:     data.UserID,
+		Post:     data.PostID,
+		Content:  content,
+		Reason:   data.Reason,
+		Status:   0,
+		Username: user.Username,
 	})
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)

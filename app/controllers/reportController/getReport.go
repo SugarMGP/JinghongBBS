@@ -30,9 +30,9 @@ func GetReport(c *gin.Context) {
 		utils.JsonInternalServerErrorResponse(c)
 		return
 	}
-	// 修改 User 为 0 来屏蔽输出
+	// 修改 Username 为空来屏蔽输出
 	for i := range list {
-		list[i].User = 0
+		list[i].Username = ""
 	}
 
 	var data ResponseData

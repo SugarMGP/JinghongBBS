@@ -11,7 +11,7 @@ import (
 )
 
 type RegisterData struct {
-	User     string `json:"username" binding:"required"`
+	Username string `json:"username" binding:"required"`
 	Name     string `json:"name" binding:"required"`
 	Password string `json:"password" binding:"required"`
 	UserType uint   `json:"user_type" binding:"required"`
@@ -32,7 +32,7 @@ func Register(c *gin.Context) {
 	}
 
 	// 判断账号是否为纯数字
-	_, err = strconv.Atoi(data.User)
+	_, err = strconv.Atoi(data.Username)
 	if err != nil {
 		utils.JsonErrorResponse(c, 200502, "用户名必须为纯数字")
 		return
@@ -46,7 +46,7 @@ func Register(c *gin.Context) {
 	}
 
 	// 判断用户是否已经注册
-	_, err = userService.GetUserByUsername(data.User)
+	_, err = userService.GetUserByUsername(data.Username)
 	if err == nil {
 		utils.JsonErrorResponse(c, 200505, "用户名已存在")
 		return
@@ -57,7 +57,7 @@ func Register(c *gin.Context) {
 
 	// 注册用户
 	err = userService.Register(models.User{
-		User:     data.User,
+		Username: data.Username,
 		Name:     data.Name,
 		Password: data.Password,
 		UserType: data.UserType,
