@@ -31,7 +31,7 @@ func GetReport(c *gin.Context) {
 		return
 	}
 	// 修改 User 为 0 来屏蔽输出
-	for i, _ := range list {
+	for i := range list {
 		list[i].User = 0
 	}
 
