@@ -9,9 +9,7 @@ import (
 )
 
 func Init(r *gin.Engine) {
-	const pre = "/api"
-
-	api := r.Group(pre)
+	api := r.Group("/api")
 	{
 		api.POST("/user/login", userController.Login)
 		api.POST("/user/reg", userController.Register)
