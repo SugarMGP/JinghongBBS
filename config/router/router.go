@@ -17,5 +17,6 @@ func Init(r *gin.Engine) {
 
 		api.POST("/student/post", postController.NewPost)
 		api.GET("/student/post", postController.GetPosts)
+		api.DELETE("/student/post", postController.DeletePost)
 	}
 }
