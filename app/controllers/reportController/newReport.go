@@ -25,6 +25,7 @@ func NewReport(c *gin.Context) {
 		return
 	}
 
+	// 判断是否已存在举报
 	_, err = reportService.GetReportByID(data.PostID)
 	if err == nil {
 		utils.JsonErrorResponse(c, 200505, "该帖子已被举报")
@@ -41,6 +42,7 @@ func NewReport(c *gin.Context) {
 		return
 	}
 
+	// 获取用户内容
 	user, err := userService.GetUserByID(data.UserID)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)

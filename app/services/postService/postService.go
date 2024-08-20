@@ -42,11 +42,6 @@ func DeletePost(id uint) error {
 }
 
 func EditPost(id uint, content string) error {
-	var post models.Post
-	result := database.DB.Where("id = ?", id).First(&post)
-	if result.Error != nil {
-		return result.Error
-	}
-	result = database.DB.Model(&post).Update("content", content)
+	result := database.DB.Where("id = ?", id).First(&models.Post{}).Update("content", content)
 	return result.Error
 }

@@ -13,6 +13,7 @@ type ResponseData struct {
 }
 
 func GetAllPosts(c *gin.Context) {
+	// 获取所有帖子
 	list, err := postService.GetAllPosts()
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)

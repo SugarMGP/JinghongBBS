@@ -21,6 +21,7 @@ func NewPost(c *gin.Context) {
 		return
 	}
 
+	// 新建帖子
 	err = postService.NewPost(models.Post{
 		Content: data.Content,
 		User:    data.User,

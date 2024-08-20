@@ -22,6 +22,7 @@ func EditPost(c *gin.Context) {
 		return
 	}
 
+	// 检查请求用户是否为发帖人
 	var user uint
 	user, err = postService.GetUserByPostID(data.PostID)
 	if err != nil {
@@ -38,6 +39,7 @@ func EditPost(c *gin.Context) {
 		return
 	}
 
+	// 编辑帖子
 	err = postService.EditPost(data.PostID, data.Content)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)

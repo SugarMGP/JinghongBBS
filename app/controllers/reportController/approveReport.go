@@ -24,6 +24,7 @@ func ApproveReport(c *gin.Context) {
 		return
 	}
 
+	// 获取用户信息并检查是否为管理员
 	user, err := userService.GetUserByID(data.UserID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -39,6 +40,7 @@ func ApproveReport(c *gin.Context) {
 		return
 	}
 
+	// 设置举报状态
 	err = reportService.SetReportStatus(data.PostID, data.Approval)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -50,6 +52,7 @@ func ApproveReport(c *gin.Context) {
 		}
 	}
 
+	// 若举报被批准则删除帖子
 	if data.Approval == 1 {
 		err = postService.DeletePost(data.PostID)
 		if err != nil {
