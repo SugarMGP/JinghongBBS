@@ -3,9 +3,11 @@ package postController
 import (
 	"BBS/app/models"
 	"BBS/app/services/postService"
+	"BBS/app/services/userService"
 	"BBS/app/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type PostData struct {
@@ -18,6 +20,16 @@ func NewPost(c *gin.Context) {
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
 		utils.JsonErrorResponse(c, 200501, "参数错误")
+		return
+	}
+
+	_, err = userService.GetUserByID(data.User)
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			utils.JsonErrorResponse(c, 200506, "用户不存在")
+		} else {
+			utils.JsonInternalServerErrorResponse(c)
+		}
 		return
 	}
 

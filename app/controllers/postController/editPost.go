@@ -28,11 +28,10 @@ func EditPost(c *gin.Context) {
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, 200506, "帖子不存在")
-			return
 		} else {
 			utils.JsonInternalServerErrorResponse(c)
-			return
 		}
+		return
 	}
 	if user != data.UserID {
 		utils.JsonErrorResponse(c, 200502, "请求的用户与发帖人不符")
