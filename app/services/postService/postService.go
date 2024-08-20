@@ -28,14 +28,6 @@ func GetPostByID(id uint) (*models.Post, error) {
 	return &post, nil
 }
 
-func GetUserByPostID(id uint) (uint, error) {
-	post, err := GetPostByID(id)
-	if err != nil {
-		return 0, err
-	}
-	return post.User, nil
-}
-
 func DeletePost(id uint) error {
 	result := database.DB.Where("id = ?", id).Delete(&models.Post{})
 	return result.Error

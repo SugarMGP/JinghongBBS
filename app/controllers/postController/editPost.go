@@ -23,8 +23,7 @@ func EditPost(c *gin.Context) {
 	}
 
 	// 检查请求用户是否为发帖人
-	var user uint
-	user, err = postService.GetUserByPostID(data.PostID)
+	post, err := postService.GetPostByID(data.PostID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, 200506, "帖子不存在")
@@ -33,7 +32,7 @@ func EditPost(c *gin.Context) {
 		}
 		return
 	}
-	if user != data.UserID {
+	if post.User != data.UserID {
 		utils.JsonErrorResponse(c, 200502, "请求的用户与发帖人不符")
 		return
 	}

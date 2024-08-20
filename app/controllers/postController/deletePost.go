@@ -25,8 +25,7 @@ func DeletePost(c *gin.Context) {
 		return
 	}
 
-	var user uint
-	user, err = postService.GetUserByPostID(uint(postID))
+	post, err := postService.GetPostByID(uint(postID))
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, 200506, "帖子不存在")
@@ -35,7 +34,7 @@ func DeletePost(c *gin.Context) {
 		}
 		return
 	}
-	if user != uint(userID) {
+	if post.User != uint(userID) {
 		utils.JsonErrorResponse(c, 200502, "请求的用户与发帖人不符")
 		return
 	}
