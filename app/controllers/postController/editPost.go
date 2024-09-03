@@ -10,11 +10,11 @@ import (
 
 type EditData struct {
 	PostID  uint   `json:"post_id"`
-	UserID  uint   `json:"user_id"`
 	Content string `json:"content"`
 }
 
 func EditPost(c *gin.Context) {
+	id := c.GetUint("user_id")
 	var data EditData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
@@ -32,7 +32,7 @@ func EditPost(c *gin.Context) {
 		}
 		return
 	}
-	if post.User != data.UserID {
+	if post.User != id {
 		utils.JsonErrorResponse(c, 200502, "请求的用户与发帖人不符")
 		return
 	}

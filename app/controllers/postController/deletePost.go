@@ -11,13 +11,8 @@ import (
 
 func DeletePost(c *gin.Context) {
 	var err error
-	var userID, postID int
-
-	userID, err = strconv.Atoi(c.Query("user_id"))
-	if err != nil || userID < 0 {
-		utils.JsonErrorResponse(c, 200501, "参数错误")
-		return
-	}
+	var postID int
+	id := c.GetUint("user_id")
 
 	postID, err = strconv.Atoi(c.Query("post_id"))
 	if err != nil || postID < 0 {
@@ -34,7 +29,7 @@ func DeletePost(c *gin.Context) {
 		}
 		return
 	}
-	if post.User != uint(userID) {
+	if post.User != id {
 		utils.JsonErrorResponse(c, 200502, "请求的用户与发帖人不符")
 		return
 	}

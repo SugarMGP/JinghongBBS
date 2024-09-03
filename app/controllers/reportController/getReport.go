@@ -5,7 +5,6 @@ import (
 	"BBS/app/services/reportService"
 	"BBS/app/services/userService"
 	"BBS/app/utils"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -16,18 +15,11 @@ type ResponseData struct {
 }
 
 func GetReport(c *gin.Context) {
-	var userID int
 	var err error
-
-	// 获取 Query 参数
-	userID, err = strconv.Atoi(c.Query("user_id"))
-	if err != nil || userID < 0 {
-		utils.JsonErrorResponse(c, 200501, "参数错误")
-		return
-	}
+	id := c.GetUint("user_id")
 
 	// 获取举报列表
-	list, err := reportService.GetReports(uint(userID))
+	list, err := reportService.GetReports(id)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return
@@ -44,19 +36,10 @@ func GetReport(c *gin.Context) {
 }
 
 func GetAllReportsUnhandled(c *gin.Context) {
-	var userID int
-	var err error
-
-	// 获取 Query 参数
-	userID, err = strconv.Atoi(c.Query("user_id"))
-	if err != nil || userID < 0 {
-		utils.JsonErrorResponse(c, 200501, "参数错误")
-		return
-	}
+	id := c.GetUint("user_id")
 
 	// 获取用户信息并检查是否为管理员
-	var user *models.User
-	user, err = userService.GetUserByID(uint(userID))
+	user, err := userService.GetUserByID(id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, 200506, "用户不存在")

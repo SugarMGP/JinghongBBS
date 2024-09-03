@@ -12,12 +12,12 @@ import (
 )
 
 type ReportData struct {
-	UserID uint   `json:"user_id"`
 	PostID uint   `json:"post_id"`
 	Reason string `json:"reason"`
 }
 
 func NewReport(c *gin.Context) {
+	id := c.GetUint("user_id")
 	var data ReportData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
@@ -43,14 +43,14 @@ func NewReport(c *gin.Context) {
 	}
 
 	// 获取用户内容
-	user, err := userService.GetUserByID(data.UserID)
+	user, err := userService.GetUserByID(id)
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
 		return
 	}
 
 	err = reportService.NewReport(models.Report{
-		User:     data.UserID,
+		User:     id,
 		Post:     data.PostID,
 		Content:  post.Content,
 		Reason:   data.Reason,

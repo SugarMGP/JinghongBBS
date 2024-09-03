@@ -15,6 +15,11 @@ type LoginData struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type LoginResponse struct {
+	UserType uint   `json:"user_type"`
+	Token    string `json:"token"`
+}
+
 func Login(c *gin.Context) {
 	var data LoginData
 	err := c.ShouldBindJSON(&data)
@@ -46,6 +51,16 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil {
+		utils.JsonInternalServerErrorResponse(c)
+		return
+	}
+	response := LoginResponse{
+		UserType: user.UserType,
+		Token:    token,
+	}
+
 	// 返回用户信息
-	utils.JsonSuccessResponse(c, user)
+	utils.JsonSuccessResponse(c, response)
 }

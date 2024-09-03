@@ -11,12 +11,12 @@ import (
 )
 
 type ApproveData struct {
-	UserID   uint `json:"user_id"`
 	PostID   uint `json:"post_id"`
 	Approval uint `json:"approval"`
 }
 
 func ApproveReport(c *gin.Context) {
+	id := c.GetUint("user_id")
 	var data ApproveData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
@@ -25,7 +25,7 @@ func ApproveReport(c *gin.Context) {
 	}
 
 	// 获取用户信息并检查是否为管理员
-	user, err := userService.GetUserByID(data.UserID)
+	user, err := userService.GetUserByID(id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, 200506, "用户不存在")

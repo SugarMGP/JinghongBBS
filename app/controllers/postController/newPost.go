@@ -12,10 +12,10 @@ import (
 
 type PostData struct {
 	Content string `json:"content" binding:"required"`
-	User    uint   `json:"user_id" binding:"required"`
 }
 
 func NewPost(c *gin.Context) {
+	id := c.GetUint("user_id")
 	var data PostData
 	err := c.ShouldBindJSON(&data)
 	if err != nil {
@@ -23,7 +23,7 @@ func NewPost(c *gin.Context) {
 		return
 	}
 
-	_, err = userService.GetUserByID(data.User)
+	_, err = userService.GetUserByID(id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			utils.JsonErrorResponse(c, 200506, "用户不存在")
@@ -36,7 +36,7 @@ func NewPost(c *gin.Context) {
 	// 新建帖子
 	err = postService.NewPost(models.Post{
 		Content: data.Content,
-		User:    data.User,
+		User:    id,
 	})
 	if err != nil {
 		utils.JsonInternalServerErrorResponse(c)
