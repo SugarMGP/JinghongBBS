@@ -6,6 +6,7 @@ import (
 	"BBS/app/utils"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -35,8 +36,13 @@ func Login(c *gin.Context) {
 	}
 
 	// 判断密码是否正确
-	if data.Password != user.Password {
-		utils.JsonErrorResponse(c, 200507, "密码错误")
+	err = userService.VerifyPassword(data.Password, user.Password)
+	if err != nil {
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			utils.JsonErrorResponse(c, 200507, "密码错误")
+		} else {
+			utils.JsonInternalServerErrorResponse(c)
+		}
 		return
 	}
 

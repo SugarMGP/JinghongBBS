@@ -3,7 +3,13 @@ package userService
 import (
 	"BBS/app/models"
 	"BBS/config/database"
+
+	"golang.org/x/crypto/bcrypt"
 )
+
+func VerifyPassword(password, hashedPassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
 
 func GetUserByUsername(username string) (*models.User, error) {
 	var user models.User
@@ -15,6 +21,11 @@ func GetUserByUsername(username string) (*models.User, error) {
 }
 
 func Register(user models.User) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
 	result := database.DB.Create(&user)
 	return result.Error
 }
