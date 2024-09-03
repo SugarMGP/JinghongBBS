@@ -30,9 +30,9 @@ func ExtractToken(tokenString string) (uint, error) {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-	// 如果 jwt 有效，将 user_id 转换为字符串，然后再转换为 uint32
+	// 如果 jwt 有效，将 user_id 转换为字符串，然后再转换为 uint
 	if ok && token.Valid {
-		uid, err := strconv.ParseUint(claims["user_id"].(string), 10, 32)
+		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["user_id"]), 10, 32)
 		if err != nil {
 			return 0, err
 		}
