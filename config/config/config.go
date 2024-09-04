@@ -12,7 +12,6 @@ func init() {
 	Config.SetConfigName("config")
 	Config.SetConfigType("yaml")
 	Config.AddConfigPath(".")
-	Config.WatchConfig()
 
 	err := Config.ReadInConfig()
 	if err != nil {
