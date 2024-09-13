@@ -17,7 +17,11 @@ func JWTAuth(c *gin.Context) {
 
 	id, err := utils.ExtractToken(token)
 	if err != nil {
-		utils.JsonInternalServerErrorResponse(c)
+		if err == utils.ErrTokenHandlingFailed {
+			utils.JsonInternalServerErrorResponse(c)
+		} else {
+			utils.JsonErrorResponse(c, 200502, "密钥无效")
+		}
 		c.Abort()
 		return
 	}
