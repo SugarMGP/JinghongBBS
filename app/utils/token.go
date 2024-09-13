@@ -2,41 +2,52 @@ package utils
 
 import (
 	"BBS/config/config"
-	"fmt"
+	"errors"
 	"strconv"
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(userID uint) (string, error) {
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["user_id"] = userID
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+type UserClaims struct {
+	UserID uint `json:"user_id"`
+	jwt.RegisteredClaims
+}
 
-	return token.SignedString([]byte(config.Config.GetString("jwt.secret")))
+var ErrTokenHandlingFailed = errors.New("token handling failed")
+
+func GenerateToken(userID uint) (string, error) {
+	lifespan, err := strconv.Atoi(config.Config.GetString("jwt.lifespan"))
+	if err != nil {
+		return "", err
+	}
+
+	claims := UserClaims{
+		UserID: userID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(lifespan) * time.Hour)), // 过期时间
+			IssuedAt:  jwt.NewNumericDate(time.Now()),                                          // 签发时间
+			NotBefore: jwt.NewNumericDate(time.Now()),                                          // 生效时间
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(config.Config.GetString("jwt.secret")))
+	return tokenString, err
 }
 
 // 从 jwt 中解析出 user_id
 func ExtractToken(tokenString string) (uint, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
+	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (any, error) {
 		return []byte(config.Config.GetString("jwt.secret")), nil
 	})
 	if err != nil {
 		return 0, err
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-	// 如果 jwt 有效，将 user_id 转换为字符串，然后再转换为 uint
+	claims, ok := token.Claims.(*UserClaims)
+	// 如果 jwt 有效，返回 user_id
 	if ok && token.Valid {
-		uid, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["user_id"]), 10, 32)
-		if err != nil {
-			return 0, err
-		}
-		return uint(uid), nil
+		return claims.UserID, nil
 	}
-	return 0, fmt.Errorf("invalid token")
+	return 0, ErrTokenHandlingFailed
 }

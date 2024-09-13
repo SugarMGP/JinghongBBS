@@ -7,3 +7,4 @@ database:
 
 jwt:
   secret: "wP3-sN6&lVgG4-8>gJ9)"
+  lifespan: 2
